@@ -1,7 +1,7 @@
 """Models and database functions for hiking trails project."""
 from flask_sqlalchemy import SQLAlchemy
 
-#from ratings solution
+
 db = SQLAlchemy()
 
 class User(db.Model):

@@ -1,21 +1,28 @@
-{% extends 'base.html' %}
+ {% extends 'base.html' %}
 {% block content %}
-  <div id="Login user">
-    <h2>Login User</h2>
-      Phone Number:<input type="text" name="phonenumber">
-      Password:<input type="password" name="password" required>
-      <input type="submit" name="login" value="Login"> 
-    </form>
-   <div id="Signup user">
-   <h2>Signup User</h2>
-      Phone Number:<input type="text" name="phonenumber">
-      Password: <input type="password" name="password" required>
-      <input type="submit" name="signup" value="Signup">
-
-    </div> 
-    <form action="/zaki" method="post">
 
 
 
+
+    <h2>Signup User</h2>  
+
+  <div id = "Signup user">
+ 
+   <form action="/" method="post">
+    <p> {{ form.phonenumber.label }} {{ form.phonenumber }}</p>
+    <p> {{ form.password.label }} {{ form.password }}</p>
+    {{ form.submit }} 
   </form>
+    </div>
+
+<h2> Already a user?</h2>
+<form action="/login">
+<button name="redirect" value="submit"> LogIn</button>
+</form>
+
+
+
+
+
+  
 {% endblock %}

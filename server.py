@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, User, Preference
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, SubmitField, BooleanField
+from wtforms import StringField, SelectField, SubmitField, BooleanField, PasswordField, validators, Form
 
 
 class PreferenceForm(FlaskForm):
@@ -18,6 +18,14 @@ class PreferenceForm(FlaskForm):
 
 	submit = SubmitField("Lets Hike!!!!!")
 
+class UserForm(FlaskForm):
+	phonenumber = StringField('phone number')
+	password = PasswordField('password')
+	
+	submit = SubmitField("Signup for Hike")	
+
+	
+
 app = Flask(__name__)
 
 app.secret_key = "ABC"
@@ -25,13 +33,50 @@ app.jinja_env.undefined = StrictUndefined
 
 @app.route('/')
 def index():
+	form = UserForm()
 
-	return render_template("homepage.html")
+
+	return render_template("homepage.html", form=form)
 
 # @app.route('/', methods=['POST'])
 # def signup_user():
 # 	request.args.get('')
-	
+
+@app.route('/login',methods=['GET','POST'])
+def user_login():
+	if request.method == 'GET':
+
+		form = UserForm(request.form)
+
+		return render_template("login.html", form=form)
+	else:
+		form = UserForm(request.form)	
+
+		old_user = User.query.filter_by(phone_number=form.phonenumber.data).first()
+
+		if not old_user:
+			flash("No such user")
+			return redirect("/")
+		if old_user.password != form.password.data:
+	 		flash("Incorrect password")
+	 		return redirect("/")
+
+
+		session["user_id"] = old_user.user_id
+		return("yay you are logged in")
+		flash("logged in")
+
+
+
+@app.route('/',methods=['POST'])
+def user_signup():
+
+		form = UserForm(request.form)
+		new_user = User(phone_number=form.phonenumber.data, password=form.password.data )
+		db.session.add(new_user)
+		db.session.commit()
+		flash("user has been registered")
+		return redirect("/preference")
 
 
 @app.route("/preference", methods=['GET','POST'])
@@ -54,6 +99,13 @@ def preference():
 
 		flash("preferences added to data base")
 		return "data has been added"
+
+
+# @app.route("/userprofile" methods=['GET'])
+# def user_profile():
+# 	user_phonenumber = User.query.get('user_id')
+# 	user_preference = 
+
 
 	
 
