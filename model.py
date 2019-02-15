@@ -40,8 +40,9 @@ class Preference(db.Model):
 
 	def __repr__(self):
 
-		repr_str = "<Preference: preference_id={} >"
-		return repr_str.format(self.preference_id)
+		repr_str = "<Preference: preference_id={}, {}, {}, {}, {}, {}, {}, {}, {} >"
+		return repr_str.format(self.preference_id, self.location, self.is_parking, self.is_restrooms, self.is_dogfriendly,
+			self.is_kidsfriendly, self.is_daily, self.is_weekly, self.is_monthly)
 							
 def init_app():
 	# So that we can use Flask-SQLAlchemy, we'll make a Flask app.
