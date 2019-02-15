@@ -3,7 +3,9 @@ from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, User, Preference
 from flask_wtf import FlaskForm
+import requests
 from wtforms import StringField, SelectField, SubmitField, BooleanField, PasswordField, validators, Form
+import os
 
 
 class PreferenceForm(FlaskForm):
@@ -28,7 +30,10 @@ class UserForm(FlaskForm):
 
 app = Flask(__name__)
 
-app.secret_key = "ABC"
+
+
+
+app.secret_key = os.environ["secret_key"]
 app.jinja_env.undefined = StrictUndefined
 
 @app.route('/')
@@ -63,7 +68,7 @@ def user_login():
 
 
 		session["user_id"] = old_user.user_id
-		return("yay you are logged in")
+		return redirect("/userprofile")
 		flash("logged in")
 
 
@@ -75,6 +80,7 @@ def user_signup():
 		new_user = User(phone_number=form.phonenumber.data, password=form.password.data )
 		db.session.add(new_user)
 		db.session.commit()
+		session["user_id"] = new_user.user_id
 		flash("user has been registered")
 		return redirect("/preference")
 
@@ -90,7 +96,7 @@ def preference():
 	else:
 		# save prefdata
 		form = PreferenceForm(request.form)
-		new_preferences = Preference(location=form.location.data, is_parking=form.parking.data,
+		new_preferences = Preference(user_id= session["user_id"], location=form.location.data, is_parking=form.parking.data,
 		is_restrooms=form.restrooms.data, is_dogfriendly=form.dogfriendly.data, is_kidsfriendly=form.kidsfriendly.data,
 		is_daily=form.daily.data, is_weekly=form.weekly.data, is_monthly=form.monthly.data )
 
@@ -101,10 +107,15 @@ def preference():
 		return "data has been added"
 
 
-# @app.route("/userprofile" methods=['GET'])
-# def user_profile():
-# 	user_phonenumber = User.query.get('user_id')
-# 	user_preference = 
+@app.route("/userprofile")
+def user_profile():
+	user = User.query.get(session["user_id"])
+	user_phonenumber = user.phone_number
+	
+	user_preferences = user.preferences
+
+
+	return render_template("userprofile.html", user_phonenumber=user_phonenumber, user_preferences=user_preferences)
 
 
 	
