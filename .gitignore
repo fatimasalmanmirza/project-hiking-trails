@@ -1,3 +1,4 @@
 env
 *.pyc
 send_sms.py
+secret.sh
