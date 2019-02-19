@@ -1,7 +1,7 @@
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
-from model import connect_to_db, db, User, Preference
+from model import connect_to_db, db, User
 from flask_wtf import FlaskForm
 import requests
 from wtforms import StringField, SelectField, SubmitField, BooleanField, PasswordField, validators, Form
@@ -96,13 +96,34 @@ def preference():
 
     else:
         # save prefdata
+        user = User.query.get(session["user_id"])
         form = PreferenceForm(request.form)
-        new_preferences = Preference(user_id= session["user_id"], location=form.location.data, is_parking=form.parking.data,
-        is_restrooms=form.restrooms.data, is_dogfriendly=form.dogfriendly.data, is_kidsfriendly=form.kidsfriendly.data,
-        is_daily=form.daily.data, is_weekly=form.weekly.data, is_monthly=form.monthly.data )
+        # get the user
 
-        db.session.add(new_preferences)
+        
+
+        user.location = form.location.data
+        user.is_parking = form.parking.data
+        user.is_restrooms = form.restrooms.data
+        user.is_dogfriendly = form.dogfriendly.data
+        user.is_kidsfriendly = form.kidsfriendly.data
+        user.is_daily = form.daily.data
+        user.is_weekly = form.weekly.data
+        user.is_monthly = form.monthly.data
+
+
+
+        db.session.add(user)
         db.session.commit()
+
+
+
+        # new_preferences = User(user_id= session["user_id"], location=form.location.data, is_parking=form.parking.data,
+        # is_restrooms=form.restrooms.data, is_dogfriendly=form.dogfriendly.data, is_kidsfriendly=form.kidsfriendly.data,
+        # is_daily=form.daily.data, is_weekly=form.weekly.data, is_monthly=form.monthly.data )
+
+        # db.session.add(new_preferences)
+        # db.session.commit()
 
         flash("preferences added to data base")
         return redirect("/userprofile")
@@ -112,25 +133,38 @@ def preference():
 def user_profile():
     user = User.query.get(session["user_id"])
     user_phonenumber = user.phone_number
+    user_location = user.location
+    user_is_parking = user.is_parking
+    user_is_restrooms = user.is_restrooms
+    user_is_dogfriendly = user.is_dogfriendly
+    user_is_kidsfriendly = user.is_kidsfriendly
+    user_is_daily = user.is_daily
+    user_is_weekly = user.is_weekly
+    user_is_monthly = user.is_monthly
     
-    user_preferences = user.preferences
-    return render_template("userprofile.html", user_phonenumber=user_phonenumber, user_preferences=user_preferences)
+    
+    return render_template("userprofile.html", user_phonenumber=user_phonenumber, user_location=user_location, user_is_parking=user_is_parking,
+        user_is_restrooms=user_is_restrooms, user_is_dogfriendly=user_is_dogfriendly, user_is_kidsfriendly=user_is_kidsfriendly,
+        user_is_daily=user_is_daily, user_is_weekly=user_is_weekly, user_is_monthly=user_is_monthly)
 
-@app.route("/displaytrail")
-def displaying_trail():
-    user = User.query.get(session["user_id"])
-    user_phonenumber = user.phone_number
-    user_preferences = user.preferences
-    for user_preference in user_preferences:
-        user_location = user_preference.location
+# @app.route("/displaytrail")
+def get_trail(trail_location):
+    
+    
+
+
+    # user_preferences = user.preferences
+    # for user_preference in user_preferences:
+    #     user_location = user_preference.location
 
 
     key = os.environ["YELP_API_KEY"]
 
     headers = {"Authorization": 'Bearer ' + key}
-    payload = {"term": "hiking trails", "location": user_location}
+    payload = {"term": "hiking trails", "location": trail_location}
     r = requests.get("https://api.yelp.com/v3/businesses/search", headers=headers, params=payload)
     hiking_trails = r.json()
+   
 
     list_of_trails_tuples = []
     list_trails_info = hiking_trails["businesses"]
@@ -153,23 +187,35 @@ def displaying_trail():
 
 @app.route("/send_msg")
 def send_msg():
-    user = User.query.get(session["user_id"])
-    user_phonenumber = user.phone_number
-
-
+    # user = User.query.get(session["user_id"])
     account_sid = os.environ["account_sid"]
     auth_token = os.environ["auth_token"]
-    client = Client(account_sid, auth_token)
+    users = User.query.all()
+    for user in users:
+        if user.phone_number is None:
+            return "phone number does not exist {}".format(user.user_id)
+        if user.location is None:
+            return "location not found {}".format(user.user_id)
 
-    message = client.messages \
-                .create(
-                     body="Hi, here is our recommendation of Hike trails for your weekend\n"+ displaying_trail(),
-                     from_='+13347317307',
-                     to=user_phonenumber, 
-                 )
+        user_phonenumber = user.phone_number
+        user_location = user.location
+
+
+        client = Client(account_sid, auth_token)
+
+        message = client.messages \
+                    .create(
+                         body="Hi, here is our recommendation of Hike trails for your weekend\n"+ get_trail(user_location),
+                         from_='+13347317307',
+                         to=user_phonenumber, 
+                     )
 
     return message.sid
 
+
+# @app.route("/edit")
+# def edit_profile():
+#     user = User.query.get(session["user_id"])
 
 
 
