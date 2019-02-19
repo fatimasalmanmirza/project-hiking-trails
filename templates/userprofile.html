@@ -1,24 +1,19 @@
- {% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block content %}
+	<h1> Hi Hiker !! </h1>
 
-<h1> Hi Hiker !! </h1>
+	<h2>phone number: {{ user_phonenumber }}</h2>
 
-<h2>phone number: {{ user_phonenumber }}</h2>
-<h2>{% for user_preference in user_preferences %}</h2>
-<h3>location: {{ user_preference.location }}</h1>
-<h3>parking: {{ user_preference.is_parking}}</h3>
-<h3>restrooms: {{user_preference.is_restrooms}}</h3>
-<h3>dog friendly: {{ user_preference.is_dogfriendly }}</h3>
-<h3>Kids friendly: {{ user_preference.is_kidsfriendly}}</h3>
-<h3>Hike daily: {{ user_preference.is_daily}}</h3>
-<h3>Hike weekly: {{ user_preference.is_weekly }}</h3>
-<h3>Hike monthly: {{ user_preference.is_monthly }}</h3>
-	{% endfor %}
-
-
-
-<form action="/logout">
-<button name="redirect" value="submit"> Logout</button>
-</form>
-
-  {% endblock %}
+	<h3>location: {{ user_location }}</h3>
+	<h3>parking: {{ user_is_parking }}</h3>
+	<h3>restooms: {{ user_is_restrooms }}</h3>
+	<h3>dog friendly: {{ user_is_dogfriendly }}</h3>
+	<h3>Kids friendly: {{ user_is_kidsfriendly }}</h3>
+	<h3>Hike daily: {{ user_is_daily }}</h3>
+	<h3>Hike weekly: {{ user_is_weekly }}</h3>
+	<h3>Hike monthly: {{ user_is_monthly }}</h3>
+	<form action="/logout">
+		<button name="redirect" value="submit"> Logout</button>
+	</form>
+	<a href = "/preference">Edit your profile</a>
+ {% endblock %}
