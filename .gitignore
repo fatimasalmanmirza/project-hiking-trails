@@ -1,4 +1,4 @@
 env
 *.pyc
-send_sms.py
+.DS_Store
 secret.sh
