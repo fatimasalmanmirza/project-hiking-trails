@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+	{% for trails in list_trails_info %}
+
+		
+	<div> 
+		Trail name: {{ trails["name"] }}
+		<a href="{{ trails['url'] }}">Find me on Yelp</a>
+		<img src="{{ trails['image_url'] }}"  >
+	</div>
+	{% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+ {% endblock %}
