@@ -12,8 +12,19 @@
 	<h3>Hike daily: {{ user_is_daily }}</h3>
 	<h3>Hike weekly: {{ user_is_weekly }}</h3>
 	<h3>Hike monthly: {{ user_is_monthly }}</h3>
+	<form action="/send_msg_now">
+		<button name ="redirect" value="submit"> Get recommendation now!
+		</button> 
+	</form>
+
+	<form action="/show_all_trails">
+		<button name ="redirect" value="submit">Show me more trails!</button>
+	</form>	
+
+
 	<form action="/logout">
 		<button name="redirect" value="submit"> Logout</button>
 	</form>
 	<a href = "/preference">Edit your profile</a>
+
  {% endblock %}
