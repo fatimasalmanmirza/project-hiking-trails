@@ -179,10 +179,28 @@ def get_trail(trail_location):
     # print(random.choice(list_of_trails_tuples))  
     recommended_trial = random.choice(list_of_trails_tuples)
     trail_location = recommended_trial[2]
-    for i in recommended_trial[2]:
-        trail_location_as_string = ""+i
+    if len(trail_location) <= 1:
+        result = trail_location[0]
 
-    return "Trail name: {} \nRating: {} \nAddress: {}".format(str(recommended_trial[0]),str(recommended_trial[1]), trail_location_as_string) 
+    elif len(trail_location) == 2:
+        r = trail_location[0]
+        r2 = trail_location[1]
+        result = r + ', ' + r2
+
+    elif len(trail_location) >2:
+        r = trail_location[0]
+        r2 = trail_location[1]
+        r3 = trail_location[2]
+        result = r + ', ' + r2 +', '+ r3
+
+
+
+    trail_location_as_string = ""
+    for i in recommended_trial[2]:
+        trail_location_as_string += i
+    google_map_location_query_string = result.replace(" ","+")    
+    link = "https://www.google.com/maps/dir//" + ""+google_map_location_query_string 
+    return "Trail name: {} \nRating: {} \nTrail location: {} \nGet Directions: {}" .format(str(recommended_trial[0]),str(recommended_trial[1]), trail_location_as_string, link) 
 
 
 @app.route("/send_msg")
@@ -205,12 +223,56 @@ def send_msg():
 
         message = client.messages \
                     .create(
-                         body="Hi, here is our recommendation of Hike trails for your weekend\n"+ get_trail(user_location),
+                         body="Hi, here is our recommendation of a Hike trail for your weekend\n"+ get_trail(user_location),
                          from_='+13347317307',
                          to=user_phonenumber, 
                      )
 
     return message.sid
+
+
+@app.route("/send_msg_now") 
+def send_msg_now():
+    account_sid = os.environ["account_sid"]
+    auth_token = os.environ["auth_token"]
+    user = User.query.get(session["user_id"])
+
+
+    user_phonenumber = user.phone_number
+    user_location = user.location
+
+
+    client = Client(account_sid, auth_token)
+
+    message = client.messages \
+                .create(
+                    body="Hi, here is our recommendation of a Hike trail for your weekend\n"+ get_trail(user_location),
+                    from_='+13347317307',
+                    to=user_phonenumber, 
+                 )
+    return "hike trail recommendation has been sent" 
+
+
+@app.route("/show_all_trails")
+def show_all_trails():
+    key = os.environ["YELP_API_KEY"]
+    user = User.query.get(session["user_id"])
+    user_location = user.location
+
+    headers = {"Authorization": 'Bearer ' + key}
+    payload = {"term": "hiking trails", "location": user_location}
+    r = requests.get("https://api.yelp.com/v3/businesses/search", headers=headers, params=payload)
+    hiking_trails = r.json()
+   
+    list_trails_info = hiking_trails["businesses"]
+    # for trails in list_trails_info:
+        
+    #     trail_names = trails["name"]
+        
+    #     trail_yelp_url = trails["url"]
+    
+
+    return render_template("showalltrails.html", list_trails_info=list_trails_info)
 
 
 # @app.route("/edit")
