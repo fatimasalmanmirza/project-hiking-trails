@@ -2,7 +2,7 @@
 from twilio.rest import Client
 from model import connect_to_db, db, User
 from flask import Flask
-from server import get_trail
+from server import get_trails_from_location, filter_trails_by_rating, get_random_trail, trail_to_text_msg
 import os
 # import schedule
 # import time
@@ -13,7 +13,7 @@ import os
 
 
 def send_msg():
-	"""Sending trail recommendation every week."""
+	"""Sending trail recommendation text every week using cronjob"""
 
 
 	account_sid = os.environ["account_sid"]
@@ -33,6 +33,10 @@ def send_msg():
 		test_sid = 'ACa07eecf8707d51cbb03d2353c182a433'
 		test_auth_token = '0e013261e0966370cfa1d5eb47cc2aab'
 
+		trails = get_trails_from_location(user_location)
+        high_rating_trails = filter_trails_by_rating(trails)
+        recommended_trail = get_random_trail(high_rating_trails)
+
 		test = False
 
 		if test:
@@ -42,7 +46,7 @@ def send_msg():
 
 		message = client.messages \
 		                .create(
-		                    	body="Hi Hike every weekend recommends you this trail for your weekend\n"+get_trail(user_location),
+		                    	body=f"Hi, here is our recommendation of a Hike trail for your weekend\n{trail_to_text_msg(recommended_trail)}",
 		                    	from_='+13347317307',
 		                    	to=user_phonenumber
 		                 )
