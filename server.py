@@ -45,6 +45,7 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def user_login():
+    """user login"""
     if request.method == 'GET':
 
         form = UserForm(request.form)
@@ -70,6 +71,7 @@ def user_login():
 
 @app.route('/', methods=['POST'])
 def user_signup():
+    """user signup"""
 
     form = UserForm(request.form)
     new_user = User(phone_number=form.phonenumber.data,
@@ -83,6 +85,7 @@ def user_signup():
 
 @app.route("/preference", methods=['GET', 'POST'])
 def preference():
+    """getting user info from user"""
     if request.method == 'GET':
         # display form
         form = PreferenceForm()
@@ -113,56 +116,73 @@ def preference():
 
 @app.route("/userprofile")
 def user_profile():
+    """displaying user profile"""
     user = User.query.get(session["user_id"])
-    user_phonenumber = user.phone_number
-    user_location = user.location
-    user_is_parking = user.is_parking
-    user_is_restrooms = user.is_restrooms
-    user_is_dogfriendly = user.is_dogfriendly
-    user_is_kidsfriendly = user.is_kidsfriendly
-    user_is_daily = user.is_daily
-    user_is_weekly = user.is_weekly
-    user_is_monthly = user.is_monthly
 
-    return render_template("userprofile.html", user_phonenumber=user_phonenumber, user_location=user_location, user_is_parking=user_is_parking,
-                           user_is_restrooms=user_is_restrooms, user_is_dogfriendly=user_is_dogfriendly, user_is_kidsfriendly=user_is_kidsfriendly,
-                           user_is_daily=user_is_daily, user_is_weekly=user_is_weekly, user_is_monthly=user_is_monthly)
+    return render_template("userprofile.html", 
+        user_phonenumber=user.phone_number, 
+        user_location=user.location, 
+        user_is_parking=user.is_parking,
+        user_is_restrooms=user.is_restrooms, 
+        user_is_dogfriendly=user.is_dogfriendly, 
+        user_is_kidsfriendly=user.is_kidsfriendly,
+        user_is_daily=user.is_daily, 
+        user_is_weekly=user.is_weekly, 
+        user_is_monthly=user.is_monthly)
 
 # @app.route("/displaytrail")
 
 
-def get_trail(trail_location):
+def get_trails_from_location(location_of_trails):
 
     key = os.environ["YELP_API_KEY"]
 
     headers = {"Authorization": 'Bearer ' + key}
-    payload = {"term": "hiking trails", "location": trail_location}
+    payload = {"term": "hiking trails", "location": location_of_trails}
     r = requests.get("https://api.yelp.com/v3/businesses/search",
                      headers=headers, params=payload)
     hiking_trails = r.json()
 
-    list_of_trails_tuples = []
-    list_trails_info = hiking_trails["businesses"]
-    for trails in list_trails_info:
+    return hiking_trails["businesses"]
 
-        names = trails["name"]
-        ratings = trails["rating"]
-        address = trails["location"]["display_address"]
-        tuple_trails = (names, ratings, address)
-        if ratings >= 4:
-            list_of_trails_tuples.append((names, ratings, address))
 
-    recommended_trial = random.choice(list_of_trails_tuples)
-    trail_location = recommended_trial[2]
-    main_address = "\n".join(trail_location)
+def filter_trails_by_rating(trails, rating=4):
+    """filter trails by ratings"""
+    filtered_trails = []
+    for trail in trails:
+        print(trail)
+        if trail["rating"] >= rating:
+            filtered_trails.append(trail)
+
+    return filtered_trails
+
+
+def get_random_trail(trails):
+    """selecting random trail from best rating"""
+    return random.choice(trails)
+
+
+def make_directions_url(trail_address):
+    """trail location coverted to google address"""
+
     base_url = 'https://www.google.com/maps/dir//'
-    google_address = urllib.parse.quote_plus(main_address)
+    google_address = urllib.parse.quote_plus("\n".join(trail_address))
+    return f"{base_url}{google_address}"
 
-    return "Trail name: {} \nRating: {} \nTrail location: {} \nGet Directions: {}" .format(str(recommended_trial[0]), str(recommended_trial[1]), main_address, google_address)
+
+def trail_to_text_msg(trail):
+    """message containing trail info"""
+    trail_name = trail["name"]
+    rating = trail["rating"]
+    address = "\n".join(trail["location"]["display_address"])
+    google_url = make_directions_url(address)
+
+    return f"Trail name: {trail_name}\nRating: {rating}\nTrail location: {address}\nGet Directions: {google_url}"
 
 
 @app.route("/send_msg")
 def send_msg():
+    """sending msg to user"""
     account_sid = os.environ["account_sid"]
     auth_token = os.environ["auth_token"]
     users = User.query.all()
@@ -175,12 +195,16 @@ def send_msg():
         user_phonenumber = user.phone_number
         user_location = user.location
 
+        trails = get_trails_from_location(user_location)
+        high_rating_trails = filter_trails_by_rating(trails)
+        recommended_trail = get_random_trail(high_rating_trails)
+
+
         client = Client(account_sid, auth_token)
 
         message = client.messages \
             .create(
-                body="Hi, here is our recommendation of a Hike trail for your weekend\n" +
-                get_trail(user_location),
+                body=f"Hi, here is our recommendation of a Hike trail for your weekend\n{trail_to_text_msg(recommended_trail)}",
                 from_='+13347317307',
                 to=user_phonenumber,
             )
@@ -188,8 +212,10 @@ def send_msg():
     return message
 
 
+
 @app.route("/send_msg_now")
 def send_msg_now():
+    """sending msg to the user in session if selected recoomend now"""
     account_sid = os.environ["account_sid"]
     auth_token = os.environ["auth_token"]
     user = User.query.get(session["user_id"])
@@ -197,12 +223,19 @@ def send_msg_now():
     user_phonenumber = user.phone_number
     user_location = user.location
 
+
+    trails = get_trails_from_location(user_location)
+
+
+    high_rating_trails = filter_trails_by_rating(trails)
+
+    recommended_trail = get_random_trail(high_rating_trails)
+
     client = Client(account_sid, auth_token)
 
     message = client.messages \
         .create(
-            body="Hi, here is our recommendation of a Hike trail for your weekend\n" +
-            get_trail(user_location),
+            body=f"Hi, here is our recommendation of a Hike trail for your weekend\n{trail_to_text_msg(recommended_trail)}",
             from_='+13347317307',
             to=user_phonenumber,
         )
@@ -221,7 +254,6 @@ def show_all_trails():
     r = requests.get("https://api.yelp.com/v3/businesses/search",
                      headers=headers, params=payload)
     hiking_trails = r.json()
-
     list_trails_info = hiking_trails["businesses"]
 
     return render_template("showalltrails.html", list_trails_info=list_trails_info)
@@ -229,7 +261,7 @@ def show_all_trails():
 
 @app.route('/logout')
 def logout():
-    """logout"""
+    """logout user"""
     del session["user_id"]
     flash("logged out")
     return redirect("/")
