@@ -13,21 +13,20 @@ class User(db.Model):
 	phone_number = db.Column(db.String(30), unique=True, nullable=False)
 	password = db.Column(db.String(64), nullable=False)
 	location = db.Column(db.String(100), nullable=True)
-	is_parking = db.Column(db.Boolean, nullable=True)
-	is_restrooms = db.Column(db.Boolean, nullable=True)
-	is_dogfriendly = db.Column(db.Boolean, nullable=True)
-	is_kidsfriendly = db.Column(db.Boolean, nullable=True)
-	is_daily = db.Column(db.Boolean, nullable=True)
-	is_weekly = db.Column(db.Boolean, nullable=True)
-	is_monthly = db.Column(db.Boolean, nullable=True)
+	# is_parking = db.Column(db.Boolean, nullable=True)
+	# is_restrooms = db.Column(db.Boolean, nullable=True)
+	# is_dogfriendly = db.Column(db.Boolean, nullable=True)
+	# is_kidsfriendly = db.Column(db.Boolean, nullable=True)
+	# is_daily = db.Column(db.Boolean, nullable=True)
+	# is_weekly = db.Column(db.Boolean, nullable=True)
+	# is_monthly = db.Column(db.Boolean, nullable=True)
 
 
 	def __repr__(self):
 		"""It will provide helpful representation when printed"""
 		repr_str = "<User: id {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} >"
 		return repr_str.format(self.user_id, self.phone_number, self.password, 
-			self.location, self.is_parking, self.is_restrooms, self.is_dogfriendly,
-			self.is_kidsfriendly, self.is_daily, self.is_weekly, self.is_monthly)
+			self.location)
 
 
 							
