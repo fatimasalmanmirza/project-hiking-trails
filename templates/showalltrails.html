@@ -1,27 +1,87 @@
 {% extends 'base.html' %}
 {% block content %}
-
-
-	{% for trails in list_trails_info %}
-
-		
-	<div> 
-		Trail name: {{ trails["name"] }}
-		<a href="{{ trails['url'] }}">Find me on Yelp</a>
-		<img src="{{ trails['image_url'] }}"  >
-	</div>
-	{% endfor %}
-
-
-
-
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Simple Markers</title>
+    <style>
+      html, body { height:100%; }
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+	</style>
+  </head>
 
 
 
+	<div id="map"></div>
+	
+
+	<script type="text/javascript">
+		const trail_info = ({{ list_trails_info | tojson }});
 
 
 
+		function myMap() {
+
+			avg_lat = 0; avg_lon = 0;
+			for(i = 0; i < trail_info.length; i++){
+			trail = trail_info[i];
+			avg_lat += trail["coordinates"]["latitude"];
+			avg_lon += trail["coordinates"]["longitude"];
+			}
+			avg_lat /= trail_info.length;
+			avg_lon /= trail_info.length;
+
+			let myCenter = {lat: avg_lat, lng: avg_lon};
+
+			let map = new google.maps.Map(document.getElementById('map'),{
+				zoom: 12,
+				center: myCenter,
+			});
+
+			let infoWindow = new google.maps.InfoWindow;
 
 
+			trail_info.forEach((trail) =>{
+				lati = trail.coordinates.latitude;
+				longi = trail.coordinates.longitude;
+			
 
+				let marker = new google.maps.Marker({
+					position: new google.maps.LatLng(lati, longi),
+					map: map,
+					animation: google.maps.Animation.DROP,
+					draggable: true,
+
+				});
+
+				html = (
+					'<div class="window-content">' +
+			            '<img src='+ trail['image_url'] + ' alt="Trail image" ' + 'style="width:150px; " '+ 'class="thumbnail">'+
+			            '<p><b>Trail name: </b>' + trail["name"] + '</p>' +
+			            '<a href=' + trail["url"] + '>Find me on Yelp</a>' +
+			            
+
+				      '</div>'
+				      );
+				bindInfoWindow(marker, map, infoWindow, html);
+			});
+		}
+
+
+		function bindInfoWindow(marker, map, infoWindow, html) {
+			google.maps.event.addListener(marker, 'mouseover', function () {
+			    infoWindow.close();
+			    infoWindow.setContent(html);
+			    infoWindow.open(map, marker);
+			});
+			google.maps.event.addListener(marker, 'mouseout', function(){
+				infoWindow.close();
+			})
+		}
+	</script>
+	<script async defer src={{map_api}}>
+	</script>
  {% endblock %}
