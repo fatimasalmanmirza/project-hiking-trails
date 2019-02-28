@@ -14,12 +14,7 @@ import urllib.parse
 class PreferenceForm(FlaskForm):
     location = StringField('location')
     parking = BooleanField('Parking')
-    restrooms = BooleanField('Restrooms')
-    dogfriendly = BooleanField('Dog Friendly Trail')
-    kidsfriendly = BooleanField('Good for kids')
-    daily = BooleanField('Receive trail recommendation daily')
-    weekly = BooleanField('Receive trail recommendation weekly')
-    monthly = BooleanField('Receive trail recommendation monthly')
+
     submit = SubmitField("Lets Hike!!!!!")
 
 
@@ -33,6 +28,7 @@ app = Flask(__name__)
 
 
 app.secret_key = os.environ["secret_key"]
+map_key = os.environ["google_map_key"]
 app.jinja_env.undefined = StrictUndefined
 
 
@@ -99,13 +95,7 @@ def preference():
         # get the user
 
         user.location = form.location.data
-        user.is_parking = form.parking.data
-        user.is_restrooms = form.restrooms.data
-        user.is_dogfriendly = form.dogfriendly.data
-        user.is_kidsfriendly = form.kidsfriendly.data
-        user.is_daily = form.daily.data
-        user.is_weekly = form.weekly.data
-        user.is_monthly = form.monthly.data
+
 
         db.session.add(user)
         db.session.commit()
@@ -121,14 +111,7 @@ def user_profile():
 
     return render_template("userprofile.html", 
         user_phonenumber=user.phone_number, 
-        user_location=user.location, 
-        user_is_parking=user.is_parking,
-        user_is_restrooms=user.is_restrooms, 
-        user_is_dogfriendly=user.is_dogfriendly, 
-        user_is_kidsfriendly=user.is_kidsfriendly,
-        user_is_daily=user.is_daily, 
-        user_is_weekly=user.is_weekly, 
-        user_is_monthly=user.is_monthly)
+        user_location=user.location)
 
 # @app.route("/displaytrail")
 
@@ -256,7 +239,12 @@ def show_all_trails():
     hiking_trails = r.json()
     list_trails_info = hiking_trails["businesses"]
 
-    return render_template("showalltrails.html", list_trails_info=list_trails_info)
+    # address = "\n".join(list_trails_info["location"]["display_address"])
+    # google_url = make_directions_url(address)
+
+    map_api = "https://maps.googleapis.com/maps/api/js?key={}&callback=myMap".format(map_key)
+
+    return render_template("showalltrails.html", list_trails_info=list_trails_info, map_api=map_api)
 
 
 @app.route('/logout')
