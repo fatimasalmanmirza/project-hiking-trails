@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 class User(db.Model):
-	"""User of Trails website"""
+	"""information of User"""
 
 	__tablename__ = "users"
 
@@ -13,22 +13,47 @@ class User(db.Model):
 	phone_number = db.Column(db.String(30), unique=True, nullable=False)
 	password = db.Column(db.String(64), nullable=False)
 	location = db.Column(db.String(100), nullable=True)
-	# is_parking = db.Column(db.Boolean, nullable=True)
-	# is_restrooms = db.Column(db.Boolean, nullable=True)
-	# is_dogfriendly = db.Column(db.Boolean, nullable=True)
-	# is_kidsfriendly = db.Column(db.Boolean, nullable=True)
-	# is_daily = db.Column(db.Boolean, nullable=True)
-	# is_weekly = db.Column(db.Boolean, nullable=True)
-	# is_monthly = db.Column(db.Boolean, nullable=True)
+
 
 
 	def __repr__(self):
 		"""It will provide helpful representation when printed"""
-		repr_str = "<User: id {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} >"
+		repr_str = "<User: id {}, {}, {}, {} >"
 		return repr_str.format(self.user_id, self.phone_number, self.password, 
 			self.location)
 
+class Trail(db.Model):
+	"""Information of trails"""
+	__tablename__ = "trails"
+	trail_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+	trail_name = db.Column(db.String(50), nullable=True)
+	trail_image = db.Column(db.String(1000), nullable=True)
+	trail_google_direction = db.Column(db.String(1000), nullable=True)
+	trail_yelp_link = db.Column(db.String(1000), nullable=True)
 
+
+	def __repr__(self):
+		repr_str = "<Trail: id{}, name{}, img{}, google_url{}, yelp{} >"
+		return repr_str.format(self.trail_id, self.trail_name, self.trail_image,
+			self.trail_google_direction, self.trail_yelp_link)
+
+class Favorites(db.Model):
+	__tablename__ = "favorites"
+	favorite_id = db.Column(db.Integer, primary_key=True)
+	user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), index=True)
+	trail_id = db.Column(db.Integer, db.ForeignKey('trails.trail_id'), index=True)
+
+	#Define relationship to user
+	user = db.relationship("User",
+							backref=db.backref("favorites", order_by=favorite_id))
+	#Define relationship to trail
+	trail = db.relationship("Trail",
+							backref=db.backref("favorites", order_by=favorite_id))
+
+
+	def __repr__(self):
+		repr_str = "<Favorites: favorite_id{}, user_id{}, trail_id{} >"
+		return repr_str.format(self.favorite_id, self.user_id, self.trail_id)
 							
 def init_app():
 	# So that we can use Flask-SQLAlchemy, we'll make a Flask app.
