@@ -13,7 +13,7 @@ import urllib.parse
 
 class PreferenceForm(FlaskForm):
     location = StringField('location')
-    parking = BooleanField('Parking')
+    
 
     submit = SubmitField("Lets Hike!!!!!")
 
@@ -144,7 +144,6 @@ def get_random_trail(trails):
     """selecting random trail from best rating"""
     return random.choice(trails)
 
-
 def make_directions_url(trail_address):
     """trail location coverted to google address"""
 
@@ -239,12 +238,20 @@ def show_all_trails():
     hiking_trails = r.json()
     list_trails_info = hiking_trails["businesses"]
 
-    # address = "\n".join(list_trails_info["location"]["display_address"])
-    # google_url = make_directions_url(address)
+    for trail in list_trails_info:
+        display_address = trail["location"]["display_address"]
+        # address = "\n".join(display_address)
+        google_url = make_directions_url(display_address)
+        trail["google_directions_address"] = google_url
+
+    
 
     map_api = "https://maps.googleapis.com/maps/api/js?key={}&callback=myMap".format(map_key)
 
     return render_template("showalltrails.html", list_trails_info=list_trails_info, map_api=map_api)
+
+
+
 
 
 @app.route('/logout')
