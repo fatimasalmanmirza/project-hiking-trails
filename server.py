@@ -1,7 +1,7 @@
 from jinja2 import StrictUndefined
-from flask import Flask, render_template, request, flash, redirect, session
+from flask import Flask, render_template, request, flash, redirect, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-from model import connect_to_db, db, User
+from model import connect_to_db, db, User, Trail, Favorites
 from flask_wtf import FlaskForm
 import requests
 from wtforms import StringField, SelectField, SubmitField, BooleanField, PasswordField, validators, Form
@@ -9,6 +9,7 @@ import os
 import random
 from twilio.rest import Client
 import urllib.parse
+
 
 
 class PreferenceForm(FlaskForm):
@@ -107,11 +108,16 @@ def preference():
 @app.route("/userprofile")
 def user_profile():
     """displaying user profile"""
-    user = User.query.get(session["user_id"])
+    user_id = session["user_id"]
+
+    # user = User.query.get(session["user_id"])
+    user = User.query.get(user_id)
+
 
     return render_template("userprofile.html", 
         user_phonenumber=user.phone_number, 
-        user_location=user.location)
+        user_location=user.location, 
+        user=user)
 
 # @app.route("/displaytrail")
 
@@ -250,9 +256,46 @@ def show_all_trails():
 
     return render_template("showalltrails.html", list_trails_info=list_trails_info, map_api=map_api)
 
+@app.route("/save-trails", methods=["POST"])
+def save_fav_trails():
+    img = request.form.get("trailImage")
+    trailDir = request.form.get("trailDirections")
+    trailUrl = request.form.get("trailUrl")
+    trailName = request.form.get("trailName")
+
+
+    trail = Trail(trail_name=trailName, trail_image=img,
+        trail_google_direction=trailDir, trail_yelp_link=trailUrl)
+
+    db.session.add(trail)
+    db.session.commit()
+
+    fav = Favorites(user_id=session["user_id"], trail_id=trail.trail_id)
+    db.session.add(fav)
+    db.session.commit()
+    
+    return "1"
+
+@app.route("/unfav-trails", methods=["POST"])
+def del_fav_trails():
+    img = request.form.get("trailImage")
+    trailDir = request.form.get("trailDirections")
+    trailUrl = request.form.get("trailUrl")
+    trailName = request.form.get("trailName")
+
+    trail = Trail(trail_name=trailName, trail_image=img,
+        trail_google_direction=trailDir, trail_yelp_link=trailUrl)
+
+    db.session.delete(trail)
+    db.session.commit()
+
+    fav = Favorites(user_id=session["user_id"], trail_id=trail.trail_id)
+    db.session.delete(fav)
+    db.session.commit()
 
 
 
+    return "1"
 
 @app.route('/logout')
 def logout():
@@ -260,6 +303,8 @@ def logout():
     del session["user_id"]
     flash("logged out")
     return redirect("/")
+
+
 
 
 if __name__ == "__main__":
