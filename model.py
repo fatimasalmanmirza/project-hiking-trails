@@ -14,7 +14,7 @@ class User(db.Model):
 	password = db.Column(db.String(64), nullable=False)
 	location = db.Column(db.String(100), nullable=True)
 
-
+	trails = db.relationship("Trail", secondary="favorites", backref="users")
 
 	def __repr__(self):
 		"""It will provide helpful representation when printed"""
@@ -33,7 +33,7 @@ class Trail(db.Model):
 
 
 	def __repr__(self):
-		repr_str = "<Trail: id{}, name{}, img{}, google_url{}, yelp{} >"
+		repr_str = "<Trail: {}, {}, {}, {}, {} >"
 		return repr_str.format(self.trail_id, self.trail_name, self.trail_image,
 			self.trail_google_direction, self.trail_yelp_link)
 
