@@ -11,7 +11,7 @@ class User(db.Model):
 
 	user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
 	phone_number = db.Column(db.String(30), unique=True, nullable=False)
-	password = db.Column(db.String(64), nullable=False)
+	password = db.Column(db.String(5000), nullable=False)
 	location = db.Column(db.String(100), nullable=True)
 
 	trails = db.relationship("Trail", secondary="favorites", backref="users")
