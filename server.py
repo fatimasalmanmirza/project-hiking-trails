@@ -9,6 +9,7 @@ import os
 import random
 from twilio.rest import Client
 import urllib.parse
+import bcrypt
 
 
 
@@ -22,7 +23,7 @@ class PreferenceForm(FlaskForm):
 class UserForm(FlaskForm):
     phonenumber = StringField('phone number')
     password = PasswordField('password')
-    submit = SubmitField("lets Hike!!")
+    submit = SubmitField("Lets Hike")
 
 
 app = Flask(__name__)
@@ -53,17 +54,30 @@ def user_login():
 
         old_user = User.query.filter_by(
             phone_number=form.phonenumber.data).first()
-
+        form_password = form.password.data
         if not old_user:
             flash("No such user")
             return redirect("/")
-        if old_user.password != form.password.data:
+
+        # if bcrypt.checkpw(form_password.encode('utf-8'), old_user.password.encode('utf-8')):
+        # if old_user.password != form.password.data:
+
+            flash("Incorrect password")
+            return redirect("/")
+        if bcrypt.checkpw(form_password.encode('utf-8'), old_user.password.encode('utf-8')):
+            session["user_id"] = old_user.user_id
+            return redirect("/userprofile")
+            flash("logged in")
+        else:    
             flash("Incorrect password")
             return redirect("/")
 
-        session["user_id"] = old_user.user_id
-        return redirect("/userprofile")
-        flash("logged in")
+@app.route('/logout')
+def logout():
+    """logout user"""
+    del session["user_id"]
+    flash("logged out")
+    return redirect("/")        
 
 
 @app.route('/', methods=['POST'])
@@ -71,8 +85,12 @@ def user_signup():
     """user signup"""
 
     form = UserForm(request.form)
+    password=form.password.data
+    # new_user = User(phone_number=form.phonenumber.data,
+    #                 password=form.password.data)
+    hashed = str(bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt()), 'utf-8')
     new_user = User(phone_number=form.phonenumber.data,
-                    password=form.password.data)
+                    password=hashed)
     db.session.add(new_user)
     db.session.commit()
     session["user_id"] = new_user.user_id
@@ -244,11 +262,21 @@ def show_all_trails():
     hiking_trails = r.json()
     list_trails_info = hiking_trails["businesses"]
 
+    user_trails = user.trails
+    user_trails_name = [t.trail_name for t in user_trails]
+    print(user_trails_name)
+
     for trail in list_trails_info:
         display_address = trail["location"]["display_address"]
         # address = "\n".join(display_address)
         google_url = make_directions_url(display_address)
         trail["google_directions_address"] = google_url
+        if trail["name"] in user_trails_name:
+            trail["is_fav"] = True
+        else:
+            trail["is_fav"] = False
+
+
 
     
 
@@ -263,17 +291,23 @@ def save_fav_trails():
     trailUrl = request.form.get("trailUrl")
     trailName = request.form.get("trailName")
 
+    # trails = trails.query.all()
+    # trail_list = Trail.query.filter_by(trail_name=trailName).all()
+    
 
+    # if trail_list == []:
     trail = Trail(trail_name=trailName, trail_image=img,
-        trail_google_direction=trailDir, trail_yelp_link=trailUrl)
-
+            trail_google_direction=trailDir, trail_yelp_link=trailUrl)
+    
     db.session.add(trail)
     db.session.commit()
 
     fav = Favorites(user_id=session["user_id"], trail_id=trail.trail_id)
     db.session.add(fav)
     db.session.commit()
-    
+
+
+    # in html there should be another function to make sure that the but
     return "1"
 
 @app.route("/unfav-trails", methods=["POST"])
@@ -283,26 +317,14 @@ def del_fav_trails():
     trailUrl = request.form.get("trailUrl")
     trailName = request.form.get("trailName")
 
-    trail = Trail(trail_name=trailName, trail_image=img,
-        trail_google_direction=trailDir, trail_yelp_link=trailUrl)
-
-    db.session.delete(trail)
-    db.session.commit()
-
-    fav = Favorites(user_id=session["user_id"], trail_id=trail.trail_id)
-    db.session.delete(fav)
-    db.session.commit()
-
-
-
+    trail = Trail.query.filter_by(trail_name=trailName).first()
+    fav = Favorites.query.filter_by(user_id=session["user_id"], trail_id=trail.trail_id).first()
+    if fav:
+        db.session.delete(fav)
+        db.session.commit()
     return "1"
 
-@app.route('/logout')
-def logout():
-    """logout user"""
-    del session["user_id"]
-    flash("logged out")
-    return redirect("/")
+
 
 
 
