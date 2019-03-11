@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+
+   <form action="/editlocation" method="post">
+   	<p> {{ form.location.label }} {{ form.location }}</p>
+ 	 {{ form.submit }} 
+  </form>
+
+{% endblock %}
