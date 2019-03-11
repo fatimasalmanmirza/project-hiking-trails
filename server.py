@@ -12,18 +12,23 @@ import urllib.parse
 import bcrypt
 
 
+class LocationChangeForm(FlaskForm):
+    location = StringField('location')
+    submit = SubmitField("Change Location!")
 
-class PreferenceForm(FlaskForm):
+class SignupForm(FlaskForm):
+    phonenumber = StringField('phone number')
+    password = PasswordField('password')
     location = StringField('location')
     
 
-    submit = SubmitField("Lets Hike!!!!!")
+    submit = SubmitField("Signup!")
 
 
-class UserForm(FlaskForm):
+class LogInForm(FlaskForm):
     phonenumber = StringField('phone number')
     password = PasswordField('password')
-    submit = SubmitField("Lets Hike")
+    submit = SubmitField("SignIn")
 
 
 app = Flask(__name__)
@@ -34,23 +39,18 @@ map_key = os.environ["google_map_key"]
 app.jinja_env.undefined = StrictUndefined
 
 
-@app.route('/')
-def index():
-    form = UserForm()
-
-    return render_template("homepage.html", form=form)
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def user_login():
     """user login"""
     if request.method == 'GET':
 
-        form = UserForm(request.form)
+        form = LogInForm(request.form)
 
-        return render_template("login.html", form=form)
+        return render_template("homepage.html", form=form)
     else:
-        form = UserForm(request.form)
+        form = LogInForm(request.form)
 
         old_user = User.query.filter_by(
             phone_number=form.phonenumber.data).first()
@@ -80,37 +80,47 @@ def logout():
     return redirect("/")        
 
 
-@app.route('/', methods=['POST'])
+@app.route('/signup', methods=['GET', 'POST'])
 def user_signup():
     """user signup"""
+    if request.method == 'GET':
+        form = SignupForm(request.form)
+        return render_template("signup.html", form=form)
 
-    form = UserForm(request.form)
+    form = SignupForm(request.form)
+    location = form.location.data
     password=form.password.data
     # new_user = User(phone_number=form.phonenumber.data,
     #                 password=form.password.data)
     hashed = str(bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt()), 'utf-8')
+    users = User.query.filter_by(phone_number=form.phonenumber.data).all()
+    if users:
+        flash("user already exists")
+        return redirect("/")
     new_user = User(phone_number=form.phonenumber.data,
-                    password=hashed)
+                    password=hashed, location=form.location.data)
+    
+
     db.session.add(new_user)
     db.session.commit()
     session["user_id"] = new_user.user_id
     flash("user has been registered")
-    return redirect("/preference")
+    return redirect("/userprofile")
 
 
-@app.route("/preference", methods=['GET', 'POST'])
-def preference():
+@app.route("/editlocation", methods=['GET', 'POST'])
+def editlocation():
     """getting user info from user"""
     if request.method == 'GET':
         # display form
-        form = PreferenceForm()
+        form = LocationChangeForm()
 
-        return render_template("Preference.html", form=form)
+        return render_template("editlocation.html", form=form)
 
     else:
         # save prefdata
         user = User.query.get(session["user_id"])
-        form = PreferenceForm(request.form)
+        form = LocationChangeForm(request.form)
         # get the user
 
         user.location = form.location.data
@@ -118,9 +128,10 @@ def preference():
 
         db.session.add(user)
         db.session.commit()
-
-        flash("preferences added to data base")
+ 
+        flash("location changed")
         return redirect("/userprofile")
+
 
 
 @app.route("/userprofile")
@@ -137,7 +148,7 @@ def user_profile():
         user_location=user.location, 
         user=user)
 
-# @app.route("/displaytrail")
+
 
 
 def get_trails_from_location(location_of_trails):
@@ -157,7 +168,7 @@ def filter_trails_by_rating(trails, rating=4):
     """filter trails by ratings"""
     filtered_trails = []
     for trail in trails:
-        print(trail)
+        
         if trail["rating"] >= rating:
             filtered_trails.append(trail)
 
@@ -245,7 +256,7 @@ def send_msg_now():
             from_='+13347317307',
             to=user_phonenumber,
         )
-    return "hike trail recommendation has been sent"
+    return redirect("/userprofile")
 
 
 @app.route("/show_all_trails")
@@ -264,7 +275,7 @@ def show_all_trails():
 
     user_trails = user.trails
     user_trails_name = [t.trail_name for t in user_trails]
-    print(user_trails_name)
+    
 
     for trail in list_trails_info:
         display_address = trail["location"]["display_address"]
@@ -291,11 +302,7 @@ def save_fav_trails():
     trailUrl = request.form.get("trailUrl")
     trailName = request.form.get("trailName")
 
-    # trails = trails.query.all()
-    # trail_list = Trail.query.filter_by(trail_name=trailName).all()
-    
 
-    # if trail_list == []:
     trail = Trail(trail_name=trailName, trail_image=img,
             trail_google_direction=trailDir, trail_yelp_link=trailUrl)
     
@@ -307,7 +314,7 @@ def save_fav_trails():
     db.session.commit()
 
 
-    # in html there should be another function to make sure that the but
+
     return "1"
 
 @app.route("/unfav-trails", methods=["POST"])

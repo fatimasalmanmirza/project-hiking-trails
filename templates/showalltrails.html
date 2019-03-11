@@ -4,8 +4,8 @@
     <style>
       html, body { height:100%; }
     #map {
-      height: 100%;
-      width: 100%;
+      height: 50%;
+      width: 50%;
     }
 	</style>
 {% endblock %}
@@ -25,19 +25,35 @@
 			let trailDir = button.dataset.trailDirections;
 			let trailurl = button.dataset.trailUrl;
 			let trailName = button.dataset.trailName;
+			let isFav = button.dataset.trailFav;
 			let data = {
 				trailImage: img,
 				trailDirections: trailDir,
 				trailUrl: trailurl,
-				trailName: trailName
+				trailName: trailName,
 			};
-			$.post("/save-trails", data, (result) =>{ 
-				document.getElementById(button.id).innerHTML = "Added!";
-				document.getElementById(button.id).disabled = true;
+			if (isFav == 'false'){
+				$.post("/save-trails", data, (result) =>{
+					for(let i=0; i<trail_info.length; i++){
+					if(trail_info[i]["name"]==trailName){
+						trail_info[i]["is_fav"] = true;
+						document.getElementById(button.id).innerHTML = "Added";
+					}
+				}
+				});
+			}else{
+				$.post("/unfav-trails", data, (result) =>{ 
+				for(let i=0; i<trail_info.length; i++){
+					if(trail_info[i]["name"]==trailName){
+							trail_info[i]["is_fav"] = false;
+							document.getElementById(button.id).innerHTML = "Add to favorites!";
+					}
+				}
 				
 			});
+				
 
-
+			}
 
 		}
 
@@ -72,10 +88,30 @@
 					map: map,
 					animation: google.maps.Animation.DROP,
 					draggable: true,
-
+					trail: trail
 				});
 
-				const html = `
+
+				bindInfoWindow(marker, map, infoWindow);
+			});
+
+
+		}
+
+
+		function bindInfoWindow(marker, map, infoWindow) {
+			google.maps.event.addListener(marker, 'mouseover', function () {
+			    infoWindow.close();
+
+			    let trail = marker.trail;
+			    let button_name = "Add to favorites";
+			    let trail_enabled = "";
+				if(trail.is_fav){
+					// trail_enabled = "disabled";
+					button_name = "Added";
+				}
+
+			    const html = `
 					<div style="width:250px; height:200px">
 						<div class="window-content">
 				        	<img src="${trail.image_url}"
@@ -92,31 +128,23 @@
 				            	Find me on Yelp
 				            </a><br><br>
 				            <button
+				            	${trail_enabled}
 				            	id="trail.${trail.id}"
 				            	data-trail-image="${trail.image_url}"
 				            	data-trail-directions="${trail.google_directions_address}"
 				            	data-trail-url="${trail.url}"
 				            	data-trail-name="${trail.name}"
+				            	data-trail-fav="${trail.is_fav}"
 				            	class="add-fave-btn"
 				            	name="redirect"
 				            	onclick="addFaveTrail(this)"
 				            >
-				            	Add to favorites
+				            	${button_name}
 				            </button>
 				        </div>
 				    </div>
 				`;
 
-				bindInfoWindow(marker, map, infoWindow, html);
-			});
-
-
-		}
-
-
-		function bindInfoWindow(marker, map, infoWindow, html) {
-			google.maps.event.addListener(marker, 'mouseover', function () {
-			    infoWindow.close();
 			    infoWindow.setContent(html);
 			    infoWindow.open(map, marker);
 			});
