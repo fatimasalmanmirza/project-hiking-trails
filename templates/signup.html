@@ -1,0 +1,15 @@
+ {% extends 'base.html' %}
+{% block content %}
+    <h2>Signup User</h2>
+
+<div>
+     <form action="/signup" method="post">
+    <p> {{ form.phonenumber.label }} {{ form.phonenumber }}</p>
+    <p> {{ form.password.label }} {{ form.password }}</p>
+    <p> {{ form.location.label }} {{form.location}}
+    {{ form.submit }} 
+  </form>
+    </div>
+
+
+  {% endblock %}
