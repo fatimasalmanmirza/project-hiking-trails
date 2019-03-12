@@ -121,13 +121,7 @@
 				            <p>
 				            	<b>Trail name: </b>${trail.name}
 				            </p>
-				            <a href="${trail.google_directions_address}">
-				   				Get Directions
-				   			</a><br><br>
-				            <a href="${trail.url}">
-				            	Find me on Yelp
-				            </a><br><br>
-				            <button
+				            				            <button
 				            	${trail_enabled}
 				            	id="trail.${trail.id}"
 				            	data-trail-image="${trail.image_url}"
@@ -141,6 +135,15 @@
 				            >
 				            	${button_name}
 				            </button>
+				            <br><br>
+				            <a href="${trail.google_directions_address}">
+				   				Get Directions
+				   			</a><br><br>
+				            <a href="${trail.url}">
+				            	Find me on Yelp
+				            </a><br><br>
+
+	
 				        </div>
 				    </div>
 				`;
