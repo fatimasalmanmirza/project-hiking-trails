@@ -5,38 +5,36 @@
 	<h2>phone number: {{ user_phonenumber }}</h2>
 
 	<h3>location: {{ user_location }}</h3>
-
+<div class="col" style="width:400px; height:400px">	
 	{% for trail in user.trails %}
-<div style="width:250px; height:200px">	
-	<div class="fav-trails">
-		{{trail.trail_name}}
-		<br>
+	
+	<div class="col-6 fav-trails">
+
+		<div class="thumbnail container">
+			<img src={{trail.trail_image}} alt="Trail image" style="width:250px; height:250px; position: relative;" class="thumbnail" >
+		</div>
+
+		<div class="caption over img" style=
+			"top:175px;
+			left:30px;
+			position: absolute;
+
+
+
 		
-		<img src={{trail.trail_image}} alt="Trail image" style="width:50px; height:50px" class="thumbnail">
-		<br>
-		<a href={{trail.trail_google_direction}}>Get Directions</a>
-		<br>
-		<a href={{trail.trail_yelp_link}}>Find me on Yelp</a>
-		
+			height: 300px;
+		">
+			{{trail.trail_name}}
+			<br>
+			<a href={{trail.trail_google_direction}}>Get Directions</a>
+
+			<br>
+			<a href={{trail.trail_yelp_link}}>Find me on Yelp</a>
+		</div>
 	</div>	
-</div>
+
 	{% endfor %}
-
-	<form action="/send_msg_now">
-		<button id="show-trails" name ="redirect" value="submit"> Get recommendation now!
-		</button> 
-	</form>
-
-	<form action="/show_all_trails">
-		<button name ="redirect">Show me more trails!</button>
-	</form>	
-
-
-	<form action="/logout">
-		<button name="redirect" value="submit"> Logout</button>
-	</form>
-	<a href = "/preference">Edit your profile</a>
-
+</div>
 
 
  {% endblock %}	}
