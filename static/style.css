@@ -1,0 +1,386 @@
+/* Set the size of the div element that contains the map */
+#map {
+  height: 400px;  /* The height is 400 pixels */
+  width: 100%;  /* The width is the width of the web page */
+ }
+
+ .popup-overlay {
+visibility:hidden;
+}
+
+.popup-content {
+visibility:hidden;
+}
+
+.popup-overlay.active{
+visibility:visible;
+}
+
+.popup-content.active {
+visibility:visible;
+}
+
+
+ html, body {
+    height: 100%;
+    width: 100%;
+    color: #222;
+  }
+  div.title {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  text-align: center;
+  margin: 10px;
+  padding: 10px;
+  flex: 0 1 31.5%;
+  }
+
+  .addbutton {
+  position: relative;
+  }
+
+  h2 {
+    text-align: center;
+    font-family: 'Lora', serif;
+    text-transform: uppercase;
+    margin: 10px;
+
+  }
+
+  nav
+  {
+   position: fixed;
+   top: 0;
+  }
+
+  .dropdown-menu{
+    z-index: 1000000;
+  }
+
+  li {
+  color: #f8f9fa; 
+  }
+
+  .nav-link {
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+  }
+
+  .form-control {
+    font-size: 1.1rem ;
+  }
+
+  .sticky{
+    position: fixed;
+    top: 0;
+    width: 100%;
+  }
+
+  .sticky+ .content{
+    padding-top: 20px;
+  }
+
+  .wrapper{
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  #blocks{
+    margin: 10px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .results {
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 0 1 23%;
+  }
+
+  .details {
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 0 1 31.5%;
+  }
+
+  .results h3{
+    text-align: center;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    font-size: 20px;
+    margin: 10px 0;
+  }
+
+  .results h4{
+    font-family: 'Barlow Condensed', sans-serif;
+    text-transform: uppercase;
+    font-size: 20px;
+    color: #343a40;
+  }
+
+  .img-responsive{
+    max-width: 100%;
+    max-height: 200px;
+    margin: auto;
+    top: -50%;
+    bottom: -50%;
+    left: -50%;
+    right: -50%;
+  }
+
+  .love{
+    width: 2.5em;
+    height: 2.8em;
+    padding-top: 6px;
+  }
+
+  .grayheart {
+    width: 2.5em;
+    height: 2.8em;
+    padding-top: 6px;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    display: none
+  }
+
+  .mapicon{
+    width: 3.5em;
+    height: 3.5em;
+    padding: 10px;
+  }
+
+  .img-details{
+    max-width: 100%;
+    max-height: 300px;
+    margin: auto;
+    top: -50%;
+    bottom: -50%;
+    left: -50%;
+    right: -50%;
+  }
+
+  .photobutton{
+    font-size: .8rem;
+    line-height: .5;
+    margin: 0 auto;
+    color: rgba(0,0,0,.5);
+    border-color: #f8f9fa;
+  }
+
+  .logininput {
+    width: 400px;
+  }
+
+  .overlay{
+    
+    opacity: 1.0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 600px;
+    height: 200px;
+    margin-left: -300px;
+    margin-top: -100px;
+  }
+
+  #map { 
+    position:absolute; 
+    top:0; 
+    bottom:0; 
+    width:100%; 
+  }
+
+  .mapboxgl-popup {
+    max-width: 400px;
+  }
+
+  img.photo-details {
+    height: 220px;
+    width: 220px;
+  }
+
+  .navbar-default {
+    color: #FFFFFF;
+    background-color: #CC3333;
+/*    overflow: hidden;*/
+  }
+
+  .navbar {
+
+    padding: .8rem;
+
+  }
+
+  .navbar-nav li{
+    padding-right: 20px;
+  }
+
+  .nav-link{
+    font-size: 1.1em !important;
+  }
+
+  .carousel-inner img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .carousel-caption {
+    position: absolute;
+    top: 30%;
+    bottom: auto;
+    transform: translateY(-30%);
+  }
+
+  .carousel-caption h1 {
+    font-size: 400%;
+    text-shadow: 1px 1px 15px #000;
+  }
+
+  .carousel-caption h3 {
+    font-size: 200%
+    font-weight: 500;
+    text-shadow: 1px 1px 10px #000;
+    padding-bottom: 2rem;
+  }
+
+  .btn-primary {
+    background-color: grey;
+    border: 1px solid grey;
+    padding: 10px;
+  }
+
+  .btn-primary:hover {
+    background-color: #222;
+    border: 1px solid #222;
+  }
+
+  .logo {
+    font-family: 'Pacifico', cursive;
+    font-size: 1.5rem;
+    }
+
+  .pacifico {
+    font-family: 'Pacifico', cursive;
+    }
+
+  div.dropdown-menu.show {
+    left: 22px;
+    }
+/*--- Bootstrap Padding Fix --*/
+[class*="col-"] {
+    padding: 1rem;
+}
+
+
+/* login page */
+
+body.login{
+background-image: url('../imgs/nyc.jpg');
+background-size: cover;
+background-repeat: no-repeat;
+height: 100%;
+font-family: 'Numans', sans-serif;
+}
+
+body.signin{
+background-image: url('../imgs/seine.jpg');
+background-size: cover;
+background-repeat: no-repeat;
+height: 100%;
+font-family: 'Numans', sans-serif;
+}
+
+.container{
+height: 100%;
+align-content: center;
+}
+
+.card{
+height: 370px;
+margin-top: auto;
+margin-bottom: auto;
+width: 400px;
+background-color: rgba(0,0,0,0.5) !important;
+}
+
+.social_icon span{
+font-size: 60px;
+margin-left: 10px;
+color: #FFC312;
+}
+
+.social_icon span:hover{
+color: white;
+cursor: pointer;
+}
+
+.card-header h3{
+color: white;
+}
+
+.social_icon{
+position: absolute;
+right: 20px;
+top: -45px;
+}
+
+.input-group-prepend span{
+width: 50px;
+background-color: #f8f9fa;
+color: black;
+border:0 !important;
+}
+
+input:focus{
+outline: 0 0 0 0  !important;
+box-shadow: 0 0 0 0 !important;
+
+}
+
+.remember{
+color: white;
+}
+
+.remember input
+{
+width: 20px;
+height: 20px;
+margin-left: 15px;
+margin-right: 5px;
+}
+
+.login_btn{
+color: black;
+background-color: #f8f9fa;
+width: 100px;
+}
+
+.login_btn:hover{
+color: black;
+background-color: white;
+}
+
+.links{
+color: white;
+}
+
+.links a{
+margin-left: 4px;
+}
