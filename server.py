@@ -13,21 +13,21 @@ import bcrypt
 
 
 class LocationChangeForm(FlaskForm):
-    location = StringField('location')
+    location = StringField('location', render_kw = {'placeholder': 'Enter your location'})
     submit = SubmitField("Change Location!")
 
 class SignupForm(FlaskForm):
-    phonenumber = StringField('phone number')
-    password = PasswordField('password')
-    location = StringField('location')
+    phonenumber = StringField('phone number', render_kw = {'class': 'logininput', 'placeholder': 'Enter your phone number for eg +14156905074'})
+    password = PasswordField('password', render_kw = {'class': 'logininput', 'placeholder': 'Password'})
+    location = StringField('location', render_kw = {'placeholder': 'Enter your location'})
     
 
     submit = SubmitField("Signup!")
 
 
 class LogInForm(FlaskForm):
-    phonenumber = StringField('phone number')
-    password = PasswordField('password')
+    phonenumber = StringField('phone number', render_kw = {'class': 'logininput', 'placeholder': 'Enter your phone number for eg +14156905074'})
+    password = PasswordField('password', render_kw = {'class': 'logininput', 'placeholder': 'Password'})
     submit = SubmitField("SignIn")
 
 
@@ -343,5 +343,7 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     DebugToolbarExtension(app)
+
+    app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
     app.run(host="0.0.0.0", port=6001)
