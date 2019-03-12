@@ -1,49 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="icon" href="data:,">
+  <title>{% block title %} Hike Every Weekend{% endblock %}</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Barlow+Condensed|Numans|Pacifico|Lora:700" rel="stylesheet">
+    <link href="../static/style.css" rel="stylesheet">
+
+
+
   <script
-    type="text/javascript"
     src="https://code.jquery.com/jquery-3.3.1.js">
   </script>
-  <title>Hike Every Weekend</title>
-  {% block head %}{% endblock %}
+
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+  </script>
+
+  <script    
+    src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+
+  <script 
+    src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
 </head>
 <body>
 
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-
-        Hike Every Weekend
-      </a>
-    </div>
-
-    <!-- Collect the nav links, forms, and other content for toggling -->
 
 
-    </div>
-    <!-- /.navbar-collapse -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Hike Every Weekend</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+
+  <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        {% if "user_id" in session %}
+
+
+        <li class="nav-item">
+          <a class="nav-link" href="/show_all_trails">View on Map</a>
   
-  <!-- /.container-fluid -->
-</nav>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-trail" href="/send_msg_now">Message a Trail</a>
 
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-  <ul class=flashes>
-    {% for message in messages %}
-    <li> {{ message }} </li>
-    {% endfor %}
-  </ul>
-    {% endif %}
-    {% endwith %}
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/editlocation">Change my Location</a>
+
+          <li class="nav-item">
+          <a class="nav-link" href="/logout">Logout</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="/signup">Register</a>
+        </li>
 
 
-  
-{% block content %}
-{% endblock %}
+        {% endif %}
+
+
+      </ul>
+    </div>
+    </div>
+  </nav>
+<div id="extending">
+  {% for flash in get_flashed_messages() %}
+    <div class="alert alert-info" style="width:90%; margin:0 auto;">{{ flash }}</div>
+  {% endfor %}
+
+  <script type="text/javascript">
+    $(".nav-link.text-trail").on("click", (evt) => { 
+      alert("Message has been sent successfully")
+    }
+    );
+  </script>
+
+<div class="wrapper">
+
+
+
+
+  {% block content %}
+  {% endblock %}
 </div>
+</div>
+
+
+
 
 
 
