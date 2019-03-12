@@ -1,29 +1,26 @@
  {% extends 'base.html' %}
 {% block content %}
 
-
-
-
-    <h2>Signup User</h2> 
-   
-
-  <div id = "Signup user">
- 
-   <form action="/" method="post">
-    <p> {{ form.phonenumber.label }} {{ form.phonenumber }}</p>
-    <p> {{ form.password.label }} {{ form.password }}</p>
-    {{ form.submit }} 
-  </form>
-    </div>
-
-<h2> Already a user?</h2>
-<form action="/login">
-<button name="redirect" value="submit"> LogIn</button>
-</form>
-
-
-
-
-
-  
+<div class="homepage-banner">
+  <div class="animation-container">
+    <div class="mask"></div>
+    <video autoplay loop class="fillScreen" poster="../static/img.jpg">
+      <source src="../static/video.mp4" type="video/mp4" />
+      <source src="../static/video.webm" type="video/webm" />
+      <script src="../static/video.js">
+      </script>
+      <link href="../static/style.css" rel="stylesheet">
+    </video>
+      <div class="overlay">
+        <center>
+       
+        <form action="/" method="post">
+          <p> {{ form.phonenumber }}</p>
+          <p> {{ form.password }}</p>
+          {{ form.submit }}
+        </form>
+        </center>
+      </div>
+  </div>
+</div>
 {% endblock %}
