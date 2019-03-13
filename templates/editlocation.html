@@ -1,9 +1,27 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<div class="homepage-banner">
+  <div class="animation-container">
+    <div class="mask"></div>
+    <video autoplay loop class="fillScreen" poster="../static/img.jpg">
+      
+      <source src="../static/video.webm" type="video/webm" />
+      <script src="../static/video.js">
+      </script>
+      <link href="../static/style.css" rel="stylesheet">
+    </video>
+
+<div class="overlay">
+	<center>
    <form action="/editlocation" method="post">
-   	<p> {{ form.location.label }} {{ form.location }}</p>
+   	<p>{{ form.location }}</p>
  	 {{ form.submit }} 
   </form>
+  </center>
+</div>
+
+</div>
+</div>
 
 {% endblock %}
