@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
-	<h1> Hi Hiker !! </h1>
+	<h2> Hi Hiker !! </h2>
 
 	<h2>phone number: {{ user_phonenumber }}</h2>
 
 	<h3>location: {{ user_location }}</h3>
-<div class="col" style="width:400px; height:400px">	
+<div class="block" style="width:400px; height:400px">	
 	{% for trail in user.trails %}
 	
 	<div class="col-6 fav-trails">
 
-		<div class="thumbnail container">
+		<div class="box__image">
 			<img src={{trail.trail_image}} alt="Trail image" style="width:250px; height:250px; position: relative;" class="thumbnail" >
 		</div>
 
