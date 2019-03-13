@@ -1,15 +1,29 @@
  {% extends 'base.html' %}
 {% block content %}
-    <h2>Signup User</h2>
-
-<div>
+<div class="homepage-banner">
+  <div class="animation-container">
+    <div class="mask"></div>
+    <video autoplay loop class="fillScreen" poster="../static/img.jpg">
+      
+      <source src="../static/video.webm" type="video/webm" />
+      <script src="../static/video.js">
+      </script>
+      <link href="../static/style.css" rel="stylesheet">
+    </video>
+ 
+<div class="overlay">
+	<center>
      <form action="/signup" method="post">
-    <p> {{ form.phonenumber.label }} {{ form.phonenumber }}</p>
-    <p> {{ form.password.label }} {{ form.password }}</p>
-    <p> {{ form.location.label }} {{form.location}}
-    {{ form.submit }} 
-  </form>
-    </div>
+    	<p> {{ form.phonenumber }}</p>
+    		<p>{{ form.password }}</p>
+    	<p> {{form.location}}</p>
+    	{{ form.submit }} 
+  	</form>
+  </center>
+</div>
+</div>
+</div>
+
 
 
   {% endblock %}
