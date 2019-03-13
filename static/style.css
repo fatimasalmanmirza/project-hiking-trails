@@ -12,6 +12,12 @@
   
 }
 
+.icon-image {
+  display: inline;
+  /*margin: 0px;*/
+  /*padding*/
+}
+
 .grid-item {
   background-color: rgba(255, 255, 255, 0.8);
   padding: 20px;
