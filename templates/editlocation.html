@@ -15,7 +15,10 @@
 <div class="overlay">
 	<center>
    <form action="/editlocation" method="post">
-   	<p>{{ form.location }}</p>
+   	<i class="fa fa-map-marker fa-lg" aria-hidden="true"style="font-size:30px;color:red"> 
+   	&nbsp;{{ form.location }}</i>
+   	<br>
+   	<br>
  	 {{ form.submit }} 
   </form>
   </center>
