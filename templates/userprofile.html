@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-		
+		<br>
 	<img style ="display: inline;"src="https://img.icons8.com/ultraviolet/40/000000/cell-phone.png">
 
 	<h4 style="display: inline;">{{ user_phonenumber }}</h4>
@@ -28,12 +28,15 @@
 		
 			<br>
 	
-		
+		<i class="fas fa-directions fa-lg" aria-hidden="true" style="font-size:25px;color:green"></i>
 			<a href={{trail.trail_google_direction}}>Get Directions</a>
 
 
 			<br>
+			<i class="fa fa-yelp fa-lg" aria-hidden="true" style="font-size:25px;color:red"></i> 
 			<a href={{trail.trail_yelp_link}}>Find me on Yelp</a>
+
+
 	</div>	
 	
 
