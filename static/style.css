@@ -1,7 +1,7 @@
 /* Set the size of the div element that contains the map */
 #map {
   margin-top: 65px;
-  height: 400px;  /* The height is 400 pixels */
+  height: 100%;  /* The height is 400 pixels */
   width: 100%;  /* The width is the width of the web page */
  }
 
@@ -14,8 +14,9 @@
 
 .icon-image {
   display: inline;
-  /*margin: 0px;*/
-  /*padding*/
+  margin: 0px;
+  width: 10px;
+  height: 10px;
 }
 
 .grid-item {
