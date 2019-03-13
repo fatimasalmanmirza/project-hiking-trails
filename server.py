@@ -13,7 +13,7 @@ import bcrypt
 
 
 class LocationChangeForm(FlaskForm):
-    location = StringField('location', render_kw = {'placeholder': 'Enter your location'})
+    location = StringField('location', render_kw = {'placeholder': 'Enter new location'})
     submit = SubmitField("Edit Location!")
 
 class SignupForm(FlaskForm):
@@ -22,13 +22,13 @@ class SignupForm(FlaskForm):
     location = StringField('location', render_kw = {'placeholder': 'Enter your location'})
     
 
-    submit = SubmitField("Signup!")
+    submit = SubmitField("Sign Up!")
 
 
 class LogInForm(FlaskForm):
     phonenumber = StringField('phone number', render_kw = {'class': 'logininput', 'placeholder': 'Enter your phone number for eg +14156905074'})
     password = PasswordField('password', render_kw = {'class': 'logininput', 'placeholder': 'Password'})
-    submit = SubmitField("SignIn")
+    submit = SubmitField("Sign In")
 
 
 app = Flask(__name__)
