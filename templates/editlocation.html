@@ -13,13 +13,16 @@
     </video>
 
 <div class="overlay">
+	<i class="fa fa-map-marker fa-lg" aria-hidden="true"style="font-size:30px;color:red;"> 
 	<center>
+
    <form action="/editlocation" method="post">
-   	<i class="fa fa-map-marker fa-lg" aria-hidden="true"style="font-size:30px;color:red"> 
-   	&nbsp;{{ form.location }}</i>
+   <!-- 	<i class="fa fa-map-marker fa-lg" aria-hidden="true"style="font-size:30px;color:red">  -->
+   	&nbsp;{{ form.location }}
    	<br>
    	<br>
- 	 {{ form.submit }} 
+   	<button class='btn btn-primary'>
+ 	 {{ form.submit }}</button> 
   </form>
   </center>
 </div>

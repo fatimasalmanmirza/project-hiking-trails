@@ -14,7 +14,7 @@ import bcrypt
 
 class LocationChangeForm(FlaskForm):
     location = StringField('location', render_kw = {'placeholder': 'Enter new location'})
-    submit = SubmitField("Edit Location!")
+    submit = SubmitField("Edit")
 
 class SignupForm(FlaskForm):
     phonenumber = StringField('phone number', render_kw = {'class': 'logininput', 'placeholder': 'Enter your phone number for eg +14156905074'})
