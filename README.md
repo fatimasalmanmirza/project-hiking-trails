@@ -48,7 +48,7 @@ By logging into his account he can view his favorite trails
 
 **If you want to learn more about trail click on find me on yelp button:**
 <br/><br/>
-![View Playlists and Select]()
+
 <br/>
 
 
@@ -56,28 +56,28 @@ By logging into his account he can view his favorite trails
 
 **View all the trails around your location on google map:**
 <br/><br/>
-![View and Play Songs]()
+
 <br/>
 
 **Add favorite trails to your list by clicking on add to favorites button and unfavorite a trail by clicking on added button:**
 <br/><br/>
-![Generate New Playlist]()
+
 <br/>
 
 **Get recoomendation now by clicking on send msg now link:**
 <br/><br/>
-![View and Play Songs]()
+\
 <br/>
 
 
 **Change your location by clicking on edit location:**
 <br/><br/>
-![View and Play Songs]()
+
 <br/>
 
 **For logging out click on log out button:**
 <br/><br/>
-![View and Play Songs]()
+
 <br/>
 
 
