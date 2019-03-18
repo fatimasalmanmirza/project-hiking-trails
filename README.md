@@ -43,12 +43,12 @@ By logging into his account he can view his favorite trails
 
 **By clicking on get directions it will open the route on google maps:**
 <br/><br/>
-![View trails and get directions]()
+![View trails and get directions](/static/getdirections.png)
 <br/>
 
 **If you want to learn more about trail click on find me on yelp button:**
 <br/><br/>
-
+![Find me on Yelp](/static/yelp.png)
 <br/>
 
 
@@ -56,12 +56,12 @@ By logging into his account he can view his favorite trails
 
 **View all the trails around your location on google map:**
 <br/><br/>
-
+![View on map](/static/viewonmap.png)
 <br/>
 
 **Add favorite trails to your list by clicking on add to favorites button and unfavorite a trail by clicking on added button:**
 <br/><br/>
-
+![Add to favorites](/static/addtofav.png)
 <br/>
 
 **Get recoomendation now by clicking on send msg now link:**
@@ -72,12 +72,12 @@ By logging into his account he can view his favorite trails
 
 **Change your location by clicking on edit location:**
 <br/><br/>
-![Edit location(/static/editlocation.png)
+![Edit location](/static/editlocation.png)
 <br/> 
 
 **For logging out click on log out button:**
 <br/><br/>
-
+![logout](/static/logout.png)
 <br/>
 
 
