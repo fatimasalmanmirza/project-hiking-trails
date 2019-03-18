@@ -4,17 +4,9 @@ from model import connect_to_db, db, User
 from flask import Flask
 from server import get_trails_from_location, filter_trails_by_rating, get_random_trail, trail_to_text_msg
 import os
-# import schedule
-# import time
-
-
-
-
-
 
 def send_msg():
 	"""Sending trail recommendation text every week using cronjob"""
-
 
 	account_sid = os.environ["account_sid"]
 	auth_token = os.environ["auth_token"]
@@ -34,8 +26,8 @@ def send_msg():
 		test_auth_token = '0e013261e0966370cfa1d5eb47cc2aab'
 
 		trails = get_trails_from_location(user_location)
-        high_rating_trails = filter_trails_by_rating(trails)
-        recommended_trail = get_random_trail(high_rating_trails)
+		high_rating_trails = filter_trails_by_rating(trails)
+		recommended_trail = get_random_trail(high_rating_trails)
 
 		test = False
 
@@ -44,26 +36,30 @@ def send_msg():
 		else:
 			client = Client(account_sid, auth_token)
 
-		message = client.messages \
-		                .create(
-		                    	body=f"Hi, here is our recommendation of a Hike trail for your weekend\n{trail_to_text_msg(recommended_trail)}",
-		                    	from_='+13347317307',
-		                    	to=user_phonenumber
-		                 )
+		try:
+			message = client.messages \
+						  .create( \
+								body=f"Hi, here is our recommendation of a Hike trail for your weekend\n{trail_to_text_msg(recommended_trail)}", \
+								from_='+13347317307', \
+								to=user_phonenumber \
+						)
+			if message.sid is not None:
+				print(f'sms sent to {user_phonenumber}: {message.sid}')						  
+		except Exception as e:
+			print(f"{user_phonenumber} skipped because it cannot be used")
 
-		if message.sid is not None:
-			print(f'sms sent to {user_phonenumber}: {message.sid}')
+		
 
 	return 0
 
 if __name__ == "__main__":
 
-    app = Flask(__name__)
+	app = Flask(__name__)
 
-    app.debug = True
+	app.debug = True
 
-    connect_to_db(app)
-    send_msg()
+	connect_to_db(app)
+	send_msg()
 
 
-    # DebugToolbarExtension(app)###############################################################################
+	# DebugToolbarExtension(app)###############################################################################
