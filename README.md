@@ -28,22 +28,22 @@ By logging into his account he can view his favorite trails
 ## Demo
 **Register a Hike Every Weekend account:**
 <br/><br/>
-![Registration](/static/register.mov)
+![Registration](/static/signup.png)
 <br/>
 
 **Log in to Hike Every Weekend account:**
 <br/><br/>
-![Login](/static/signin.mov)
+![Login](/static/login.png)
 <br/>
 
 **View your favorite trails:**
 <br/><br/>
-![Favorites](/static/favorites.mov)
+![Favorites](/static/favorites.png)
 <br/>
 
 **By clicking on get directions it will open the route on google maps:**
 <br/><br/>
-![View Playlists and Select](/static/getdirections.mov)
+![View trails and get directions]()
 <br/>
 
 **If you want to learn more about trail click on find me on yelp button:**
@@ -66,14 +66,14 @@ By logging into his account he can view his favorite trails
 
 **Get recoomendation now by clicking on send msg now link:**
 <br/><br/>
-\
+
 <br/>
 
 
 **Change your location by clicking on edit location:**
 <br/><br/>
-
-<br/>
+![Edit location(/static/editlocation.png)
+<br/> 
 
 **For logging out click on log out button:**
 <br/><br/>
