@@ -1,5 +1,5 @@
 from jinja2 import StrictUndefined
-from flask import Flask, render_template, request, flash, redirect, session, jsonify
+from flask import Flask, render_template, request, flash, redirect, session, jsonify, current_app
 from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, User, Trail, Favorites
 from flask_wtf import FlaskForm
@@ -191,42 +191,11 @@ def trail_to_text_msg(trail):
     """message containing trail info"""
     trail_name = trail["name"]
     rating = trail["rating"]
-    address = "\n".join(trail["location"]["display_address"])
+    address = trail["location"]["display_address"]
     google_url = make_directions_url(address)
-
     return f"Trail name: {trail_name}\nRating: {rating}\nTrail location: {address}\nGet Directions: {google_url}"
 
 
-@app.route("/send_msg")
-def send_msg():
-    """sending msg to user"""
-    account_sid = os.environ["account_sid"]
-    auth_token = os.environ["auth_token"]
-    users = User.query.all()
-    for user in users:
-        if user.phone_number is None:
-            return "phone number does not exist {}".format(user.user_id)
-        if user.location is None:
-            return "location not found {}".format(user.user_id)
-
-        user_phonenumber = user.phone_number
-        user_location = user.location
-
-        trails = get_trails_from_location(user_location)
-        high_rating_trails = filter_trails_by_rating(trails)
-        recommended_trail = get_random_trail(high_rating_trails)
-
-
-        client = Client(account_sid, auth_token)
-
-        message = client.messages \
-            .create(
-                body=f"Hi, here is our recommendation of a Hike trail for your weekend\n{trail_to_text_msg(recommended_trail)}",
-                from_='+13347317307',
-                to=user_phonenumber,
-            )
-
-    return message
 
 
 
@@ -250,9 +219,10 @@ def send_msg_now():
 
     client = Client(account_sid, auth_token)
 
+    msg_body = f"Hi, here is our recommendation of a Hike trail for your weekend\n{trail_to_text_msg(recommended_trail)}",
     message = client.messages \
         .create(
-            body=f"Hi, here is our recommendation of a Hike trail for your weekend\n{trail_to_text_msg(recommended_trail)}",
+            body=msg_body,
             from_='+13347317307',
             to=user_phonenumber,
         )
